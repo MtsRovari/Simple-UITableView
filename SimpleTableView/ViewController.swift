@@ -22,6 +22,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         self.tableView.dataSource = self
         self.tableView.delegate = self
         downloadJson()
+        tableView.tableFooterView = UIView()
     }
 
 
@@ -55,9 +56,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             return UITableViewCell()
         }
         
-        print("\(places[indexPath.row].place)")
         cell.nameLbl.text = places[indexPath.row].place
         cell.DOBLbl.text = places[indexPath.row].place_description
+        
+        if let imageURL = URL(string: places[indexPath.row].place_cover) {
+            DispatchQueue.global().async {
+                let data = try? Data(contentsOf: imageURL)
+                if let data = data {
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        cell.imgView.image = image
+                    }
+                }
+            }
+        }
         
         return cell
     }
